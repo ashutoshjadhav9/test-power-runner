@@ -1,0 +1,16 @@
+name: Quicak 5 sec job
+on: push
+jobs:
+  upload:
+    runs-on: self-hosted
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'While_loop_5'
+        run: |
+          counter=0
+          while [ $counter -lt 5 ]; do
+            echo "Time remain $((5-1))"
+            counter=$((counter+1))
+            sleep 1
+          done

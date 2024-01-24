@@ -1,0 +1,13 @@
+name: Medium 25 minute job
+on: push
+jobs:
+  upload:
+    runs-on: self-hosted
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: cat zero to null
+        run: |
+          cat /dev/zero > /dev/null &
+          sleep 25m 
+          kill -9 $(ps aux | awk '/cat/ {pidList = pidList " " $2} END {print pidList}')

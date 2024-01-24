@@ -1,0 +1,16 @@
+name: Medium 30 minute job
+on: push
+jobs:
+  upload:
+    runs-on: self-hosted
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: test runner with stress
+        run: |
+          sudo apt install stress -y
+          stress --cpu 8 > stress,log 2>&1 &
+          sleep 20m
+          sudo apt remove stress -y
+          A=$(ps aux | awk '/stress/ {pidList = pidList " " $2} END {print pidList}')
+          kill -9 $A

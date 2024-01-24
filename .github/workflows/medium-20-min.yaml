@@ -1,0 +1,44 @@
+name: Medium 20 min job
+on: push
+jobs:
+  upload:
+    runs-on: self-hosted
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: Create File 
+        run: |
+          mkdir -p script-dir
+          cat <<EOF > script-dir/script.sh
+          #!/bin/bash
+          num=1
+          while :
+          do
+                  echo $num >> out-$1.log $
+                  num=$((num + 1))
+          done
+          EOF
+          cat <<EOF > script-dir/running-script.sh
+          #!/bin/bash
+          num1=1
+          while :
+          do
+                  bash script-dir/script.sh $num1 &
+                  num1=$((num1 + 1))
+                  sleep 5
+          done
+          EOF
+      - name: Access
+        run: | 
+          chmod 777 script-dir/script.sh script-dir/running-script.sh
+      - name: run script
+        run: | 
+          bash script-dir/running-script.sh &
+          sleep 20m 
+      - name: cleaning
+        run: |
+          A=$(ps aux | awk '/running-script.sh/ {pidList = pidList " " $2} END {print pidList}')
+          kill -9 $A
+          B=$(ps aux | awk '/script.sh/ {pidList = pidList " " $2} END {print pidList}')
+          kill -9 $B
+          rm -rf script-dir
